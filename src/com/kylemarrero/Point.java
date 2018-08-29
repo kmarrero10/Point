@@ -1,7 +1,9 @@
 package com.kylemarrero;
 
 
+import edu.princeton.cs.algs4.In;
 import edu.princeton.cs.algs4.StdDraw;
+import edu.princeton.cs.algs4.StdOut;
 
 import java.util.Comparator;
 
@@ -27,8 +29,9 @@ public class Point implements Comparable<Point> {
     }
 
     public int compareTo(Point that) {
-
-        return 0;
+        if (this.y < that.y || (this.y == that.y && this.x < that.x)) { return -1; }
+        if (that.y < this.y || (that.y == this.y && that.x < this.x)) { return 1; }
+        /*if (this.y == that.y && this.x == that.x)*/ return 0;
     }
 
     public double slopeTo(Point that) {
@@ -38,7 +41,7 @@ public class Point implements Comparable<Point> {
         if (ySlope == 0){ return 0; }
         if (xSlope == 0){ return Double.POSITIVE_INFINITY; }
 
-        return (ySlope) / (xSlope);
+        return Math.abs((ySlope) / (xSlope));
     }
 
     public Comparator<Point> slopeOrder() {
@@ -51,9 +54,30 @@ public class Point implements Comparable<Point> {
     }
 
     public static void main(String[] args) {
-	    Point point1 = new Point(2, 3);
-	    Point point2 = new Point(-2, 3);
+        In in = new In(args[0]);
+        int n = in.readInt();
+        Point[] points = new Point[n];
+        for (int i = 0; i < n; i++) {
+            int x = in.readInt();
+            int y = in.readInt();
+            points[i] = new Point(x, y);
+        }
 
-        System.out.println(point1.slopeTo(point2));
+        // draw the points
+        StdDraw.enableDoubleBuffering();
+        StdDraw.setXscale(0, 32768);
+        StdDraw.setYscale(0, 32768);
+        for (Point p : points) {
+            p.draw();
+        }
+        StdDraw.show();
+
+        // print and draw the line segments
+        BruteCollinearPoints collinear = new BruteCollinearPoints(points);
+        for (LineSegment segment : collinear.segments()) {
+            StdOut.println(segment);
+            segment.draw();
+        }
+        StdDraw.show();
     }
 }
